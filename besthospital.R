@@ -1,6 +1,7 @@
 setwd("~/Documents/DataScience/RProgramming/hospitaldata");
 library("stringr", lib.loc="/Library/Frameworks/R.framework/Versions/3.1/Resources/library");
 # just a comment to test GIT
+# and another comment
 
 best <- function(state, outcome) {
     ##Inital Validation checks
