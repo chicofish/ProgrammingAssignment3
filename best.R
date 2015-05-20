@@ -1,10 +1,23 @@
 setwd("~/Documents/DataScience/RProgramming/hospitaldata");
 library("stringr", lib.loc="/Library/Frameworks/R.framework/Versions/3.1/Resources/library");
+
+## Windows
+#setwd("C:/Users/evp9/Desktop/Coursera/RProgramming/ProgrammingAssignment3")
+#library("stringr");
+
 #read data and initialize variables
-outcomeData <- read.csv("outcome-of-care-measures.csv", colClasses = "character");
-#outcomeData[,11] <- as.numeric(outcomeData[,11]);
-#outcomeData[,17] <- as.numeric(outcomeData[,17]);
-#outcomeData[,23] <- as.numeric(outcomeData[,23]);
+outcomeData <- read.csv("outcome-of-care-measures.csv", colClasses = "character", na.strings = "Not Available");
+
+#col 11 = 30 day mortality rate Heart Attack
+#col 17 = 30 day mortality rate Heart Failure
+#col 23 = 30 day mortality rate pneumonia
+#Hospital.Name is name (col 2)
+
+
+outcomeData[,11] <- as.numeric(outcomeData[,11]);
+outcomeData[,17] <- as.numeric(outcomeData[,17]);
+outcomeData[,23] <- as.numeric(outcomeData[,23]);
+
 
 best <- function(state, outcome) {
     ##Inital Validation checks
@@ -12,14 +25,6 @@ best <- function(state, outcome) {
     
     if(str_length(state) > 2) {    
         stop ("invalid state");  
-    }
-    
-    filter <-outcomeData$State == toupper(state);
-    curstate <-outcomeData[filter,];
-    
-    ##state validation num 2
-    if(nrow(curstate) == 0) {
-        stop ("invalid state");
     }
     
     ##valid outcomes
@@ -33,28 +38,36 @@ best <- function(state, outcome) {
        stop ("invalid outcome") 
     }
     
-    filterNA <- curstate[,conditionCheck$colindex] != "not available";
-
-    curstateclean <- curstate[filterNA,];
-    #return (curstateclean);
+    
+    filter <-outcomeData$State == toupper(state);
+    curstate <-outcomeData[filter,]
+    
+    ##state validation num 2 
+    if(nrow(curstate) == 0) {
+        stop ("invalid state");
+    }
+    
+   
+    
+    filter <- !is.na(curstate[,conditionCheck$colindex]);
+    curstate <- curstate[filter,];
     
     
-    bestrate <- min(as.numeric(curstateclean[,conditionCheck$colindex]));
-    return (bestrate);
+    bestrate <- min(curstate[,conditionCheck$colindex], na.rm=TRUE);
     
-    filter <- curstateclean[,conditionCheck$colindex] == bestrate;
+    filter <- curstate[,conditionCheck$colindex] == bestrate;
     
-    best <- curstateclean[filter,2];
+    best <- curstate[filter,2];
     
-    #curstate[11 = min(curstate[,11]),3];
     
-    #outcomeData[, 11] <- as.numeric(outcome[, 11]);
-    ## You may get a warning about NAs being introduced; that is okay
-    #hist(outcome[, 11]);
+    ## Now I need to handle ties
     
-    #col 11 = 30 day mortality rate Heart Attack
-    #col 17 = 30 day mortality rate Heart Failure
-    #col 23 = 30 day mortality rate pneumonia
-    #Hospital.Name is name (col 3)
+    if(class(best)== "character") {
+        
+        return(best)
+        
+    }
+    
+    
     
 }

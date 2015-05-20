@@ -1,3 +1,4 @@
+setwd("C:/Users/evp9/Desktop/Coursera/RProgramming/ProgrammingAssignment3")
 source("best.R");
 
 check <- best("BB", "Heart Attack");
