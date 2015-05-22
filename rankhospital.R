@@ -37,7 +37,7 @@ best <- function(state, outcome) {
     
     if(nrow(conditionCheck) == 0) {
         
-       stop ("invalid outcome") 
+        stop ("invalid outcome") 
     }
     
     
@@ -48,12 +48,12 @@ best <- function(state, outcome) {
     if(nrow(curstate) == 0) {
         stop ("invalid state");
     }
-
-
+    
+    
     
     filter <- !is.na(curstate[,conditionCheck$colindex]);
     curstate <- curstate[filter,];
-   
+    
     
     bestrate <- min(curstate[,conditionCheck$colindex], na.rm=TRUE);
     
@@ -99,3 +99,4 @@ best <- function(state, outcome) {
     
     
 }
+

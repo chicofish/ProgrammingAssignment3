@@ -19,6 +19,17 @@ check <- best("MD", "heart attack");
 check <- best("MD", "pneumonia")
 check <- best("AL", "pneumonia")
 
+check <- best("MA", "pneumonia")  # tie!!!
+check <- best("MS", "heart failure")  # tie!!!
+
+
+# [1] "MA"        "pneumonia" "8.2"       "tie"      
+# [1] "MS"            "heart failure" "9.2"           "tie"          
+# [1] "MT"           "heart attack" "13.6"         "tie"         
+# [1] "SD"            "heart failure" "9.9"           "tie"          
+# [1] "UT"        "pneumonia" "9.9"       "tie"      
+# [1] "WI"            "heart failure" "9.3"           "tie"     
+
 names(check)
 min(as.numeric(check[,23]));
 
@@ -31,4 +42,9 @@ for(abbrev in stateAbbrev) {
     best(abbrev, "pneumonia");
     
 }
+
+rm(testFrame)
+
+debug(best)
+undebug(best)
 
