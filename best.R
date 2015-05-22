@@ -1,9 +1,9 @@
-setwd("~/Documents/DataScience/RProgramming/hospitaldata");
-library("stringr", lib.loc="/Library/Frameworks/R.framework/Versions/3.1/Resources/library");
+#setwd("~/Documents/DataScience/RProgramming/hospitaldata");
+#library("stringr", lib.loc="/Library/Frameworks/R.framework/Versions/3.1/Resources/library");
 
 ## Windows
-#setwd("C:/Users/evp9/Desktop/Coursera/RProgramming/ProgrammingAssignment3")
-#library("stringr");
+setwd("C:/Users/evp9/Desktop/Coursera/RProgramming/ProgrammingAssignment3")
+library("stringr");
 
 #read data and initialize variables
 outcomeData <- read.csv("outcome-of-care-measures.csv", colClasses = "character", na.strings = "Not Available");
@@ -17,6 +17,8 @@ outcomeData <- read.csv("outcome-of-care-measures.csv", colClasses = "character"
 outcomeData[,11] <- as.numeric(outcomeData[,11]);
 outcomeData[,17] <- as.numeric(outcomeData[,17]);
 outcomeData[,23] <- as.numeric(outcomeData[,23]);
+
+testFrame <- data.frame("state" = "", "condition" ="", "value" = "", "hospital" = "");
 
 
 best <- function(state, outcome) {
@@ -46,12 +48,12 @@ best <- function(state, outcome) {
     if(nrow(curstate) == 0) {
         stop ("invalid state");
     }
-    
-   
+
+
     
     filter <- !is.na(curstate[,conditionCheck$colindex]);
     curstate <- curstate[filter,];
-    
+   
     
     bestrate <- min(curstate[,conditionCheck$colindex], na.rm=TRUE);
     
@@ -63,8 +65,23 @@ best <- function(state, outcome) {
     ## Now I need to handle ties
     
     if(class(best)== "character") {
+#         testFrame[nrow(testFrame)+1,1] <<- as.character(state);
+#         testFrame[nrow(testFrame),2] <<- outcome;
+#         testFrame[nrow(testFrame),3] <<- bestrate;
+#         testFrame[nrow(testFrame),3] <<- best;
+        
+        print(c(state, outcome, bestrate));
         
         return(best)
+        
+    }
+    
+    else {
+        #curstate <- curstate[order(curstate$Hospital.Name), ];
+        print(c(state, outcome, bestrate, "tie"));
+        best <- best[order(best$Hospital.Name), ];
+        return(best[1,1])
+        
         
     }
     
