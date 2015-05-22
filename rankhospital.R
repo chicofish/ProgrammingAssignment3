@@ -1,9 +1,10 @@
-setwd("~/Documents/DataScience/RProgramming/ProgrammingAssignment3")
-library("stringr", lib.loc="/Library/Frameworks/R.framework/Versions/3.1/Resources/library");
+#setwd("~/Documents/DataScience/RProgramming/hospitaldata");
+#library("stringr", lib.loc="/Library/Frameworks/R.framework/Versions/3.1/Resources/library");
 
 ## Windows
-#setwd("C:/Users/evp9/Desktop/Coursera/RProgramming/ProgrammingAssignment3")
-#library("stringr");
+setwd("C:/Users/evp9/Desktop/Coursera/RProgramming/ProgrammingAssignment3")
+library("stringr");
+library("plyr");
 
 #read data and initialize variables
 outcomeData <- read.csv("outcome-of-care-measures.csv", colClasses = "character", na.strings = "Not Available");
@@ -18,12 +19,19 @@ outcomeData[,11] <- as.numeric(outcomeData[,11]);
 outcomeData[,17] <- as.numeric(outcomeData[,17]);
 outcomeData[,23] <- as.numeric(outcomeData[,23]);
 
-testFrame <- data.frame("state" = "xx", "condition" ="condition", "value" = "50.5", "hospital" = "Hospital", "tieFlag" = 0, stringsAsFactors=FALSE);
+testFrame <- data.frame("state" = "", "condition" ="", "value" = "", "hospital" = "", "tieFlag" = 0, stringsAsFactors = FALSE);
 
 
-best <- function(state, outcome) {
+
+rankhospital <- function(state, outcome, num = "best") {
     ##Inital Validation checks
     ##first validations before loading data for speed reasons: fail quickly!
+    
+    ##test num as input
+    if((as.integer(num) <= 0 || is.na(as.integer(num)) || as.integer(num) != num) && num != "best" && num != "worst"){
+        stop ("invalid rank")
+        
+    }
     
     if(str_length(state) > 2) {    
         stop ("invalid state");  
@@ -49,49 +57,91 @@ best <- function(state, outcome) {
         stop ("invalid state");
     }
     
-    
+
     
     filter <- !is.na(curstate[,conditionCheck$colindex]);
     curstate <- curstate[filter,];
     
+    ##num validation num 2 
+    ## do the validation after filtering out the NAs
+    if(num == "best") {
+        num <- 1
+    }
     
-    bestrate <- min(curstate[,conditionCheck$colindex], na.rm=TRUE);
+    if(num == "worst") {
+        num <- nrow(curstate)
+    }
     
-    filter <- curstate[,conditionCheck$colindex] == bestrate;
     
-    best <- curstate[filter,2];
+    if(num > nrow(curstate) ) {
+        return (NA);
+    }
+    
+    # find best or worst quickly without full state ranking
+    
+    if(num == 1){
+    
+        ranked <- min(curstate[,conditionCheck$colindex], na.rm=TRUE);
+        
+        filter <- curstate[,conditionCheck$colindex] == ranked;
+    
+    }
+    
+    else if(num == nrow(curstate)){
+        
+        ranked <- max(curstate[,conditionCheck$colindex], na.rm=TRUE);
+        filter <- curstate[,conditionCheck$colindex] == ranked;
+        
+    }
+    
+    else{
+        ##  need to sort and rank the DF and filter on a 'ranking' column
+        
+        curstate$ranking <- 1;
+        
+        curstate <- arrange(curstate, curstate[,conditionCheck$colindex], Hospital.Name)
+        
+        #return(curstate)
+        
+        ### actually if the rows are sorted, we can use num as a row identifier and no need to rank.
+        return(curstate[num,2])
+    }
+    
+    filter <- curstate[,conditionCheck$colindex] == ranked;
+    
+    rankedHospital <- curstate[filter,2];
     
     
     ## Now I need to handle ties
     
-    if(length(best)== 1) {
+    if(length(rankedHospital)== 1) {
         testFrame[nrow(testFrame)+1,1] <<- as.character(state);
-        testFrame[nrow(testFrame),2] <<- as.character(outcome);
-        testFrame[nrow(testFrame),3] <<- bestrate;
-        testFrame[nrow(testFrame),4] <<- best;
+        testFrame[nrow(testFrame),2] <<- outcome;
+        testFrame[nrow(testFrame),3] <<- ranked;
+        testFrame[nrow(testFrame),4] <<- rankedHospital;
         testFrame[nrow(testFrame),5] <<- 0;
         
         #print(c(state, outcome, bestrate));
         
-        return(best)
+        return(rankedHospital)
         
     }
     
     else {
-        #curstate <- curstate[order(curstate$Hospital.Name), ];
-        print(c(state, outcome, bestrate, "tie"));
-        best <- sort(best, decreasing=FALSE);
-        for(i in as.list(best)){
-            
+        
+        
+        rankedHospital <- sort(rankedHospital, decreasing=FALSE);
+        for(i in as.list(rankedHospital)){
             testFrame[nrow(testFrame)+1,1] <<- as.character(state);
             testFrame[nrow(testFrame),2] <<- as.character(outcome);
-            testFrame[nrow(testFrame),3] <<- bestrate;
+            testFrame[nrow(testFrame),3] <<- ranked;
             testFrame[nrow(testFrame),4] <<- i;
             testFrame[nrow(testFrame),5] <<- 1;
+            
         }
         
         
-        return(as.list(best)[[1]])
+        return(as.character(as.list(rankedHospital[[1]])));
         
         
     }
@@ -99,4 +149,3 @@ best <- function(state, outcome) {
     
     
 }
-
