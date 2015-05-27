@@ -9,6 +9,17 @@ check <- rankhospital("MA", "heart failure", -9)
 check <- rankhospital("sd", "pneumonia", 4.5)
 check <- rankhospital("ky", "pneumonia", 6587)
 
+rankhospital("mn", "heart attack", 5000)
+rankhospital("md", "heart attack", "worst")
+rankhospital("TX", "heart failure", 4)
+rankhospital("TX", "heart attack", "best")
+rankhospital("TX", "heart failure", "best")
+rankhospital("MD", "pneumonia", "best")
+rankhospital("MD", "heart attack", "best")
+rankhospital("BB", "Heart Atack", "best")
+
+rankhospital("TX", "heart failure", 12)
+
 
 
 as.integer(4.5)
@@ -52,3 +63,6 @@ for(abbrev in stateAbbrev) {
 }
 
 hold <- check
+
+debug(rankhospital)
+undebug(rankhospital)

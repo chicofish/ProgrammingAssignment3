@@ -19,7 +19,7 @@ outcomeData[,11] <- as.numeric(outcomeData[,11]);
 outcomeData[,17] <- as.numeric(outcomeData[,17]);
 outcomeData[,23] <- as.numeric(outcomeData[,23]);
 
-testFrame <- data.frame("state" = "", "condition" ="", "value" = "", "hospital" = "", "tieFlag" = 0, stringsAsFactors = FALSE);
+#testFrame <- data.frame("state" = "", "condition" ="", "value" = "", "hospital" = "", "tieFlag" = 0, stringsAsFactors = FALSE);
 
 
 
@@ -27,8 +27,17 @@ rankhospital <- function(state, outcome, num = "best") {
     ##Inital Validation checks
     ##first validations before loading data for speed reasons: fail quickly!
     
+    
+    
+    
+    if(class(num) == "character"){
+        if(num != "best" && num != "worst") {
+            stop ("invalid rank")
+        }
+    }
+    
     ##test num as input
-    if((as.integer(num) <= 0 || is.na(as.integer(num)) || as.integer(num) != num) && num != "best" && num != "worst"){
+    else if((as.integer(num) <= 0 || is.na(as.integer(num)) || as.integer(num) != num)){
         stop ("invalid rank")
         
     }
@@ -115,11 +124,11 @@ rankhospital <- function(state, outcome, num = "best") {
     ## Now I need to handle ties
     
     if(length(rankedHospital)== 1) {
-        testFrame[nrow(testFrame)+1,1] <<- as.character(state);
-        testFrame[nrow(testFrame),2] <<- outcome;
-        testFrame[nrow(testFrame),3] <<- ranked;
-        testFrame[nrow(testFrame),4] <<- rankedHospital;
-        testFrame[nrow(testFrame),5] <<- 0;
+#         testFrame[nrow(testFrame)+1,1] <<- as.character(state);
+#         testFrame[nrow(testFrame),2] <<- outcome;
+#         testFrame[nrow(testFrame),3] <<- ranked;
+#         testFrame[nrow(testFrame),4] <<- rankedHospital;
+#         testFrame[nrow(testFrame),5] <<- 0;
         
         #print(c(state, outcome, bestrate));
         
@@ -131,14 +140,14 @@ rankhospital <- function(state, outcome, num = "best") {
         
         
         rankedHospital <- sort(rankedHospital, decreasing=FALSE);
-        for(i in as.list(rankedHospital)){
-            testFrame[nrow(testFrame)+1,1] <<- as.character(state);
-            testFrame[nrow(testFrame),2] <<- as.character(outcome);
-            testFrame[nrow(testFrame),3] <<- ranked;
-            testFrame[nrow(testFrame),4] <<- i;
-            testFrame[nrow(testFrame),5] <<- 1;
-            
-        }
+#         for(i in as.list(rankedHospital)){
+#             testFrame[nrow(testFrame)+1,1] <<- as.character(state);
+#             testFrame[nrow(testFrame),2] <<- as.character(outcome);
+#             testFrame[nrow(testFrame),3] <<- ranked;
+#             testFrame[nrow(testFrame),4] <<- i;
+#             testFrame[nrow(testFrame),5] <<- 1;
+#             
+#         }
         
         
         return(as.character(as.list(rankedHospital[[1]])));

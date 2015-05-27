@@ -1,9 +1,10 @@
-setwd("~/Documents/DataScience/RProgramming/ProgrammingAssignment3")
-library("stringr", lib.loc="/Library/Frameworks/R.framework/Versions/3.1/Resources/library");
+#setwd("~/Documents/DataScience/RProgramming/ProgrammingAssignment3")
+#library("stringr", lib.loc="/Library/Frameworks/R.framework/Versions/3.1/Resources/library");
 
 ## Windows
-#setwd("C:/Users/evp9/Desktop/Coursera/RProgramming/ProgrammingAssignment3")
-#library("stringr");
+setwd("C:/Users/evp9/Desktop/Coursera/RProgramming/ProgrammingAssignment3")
+library("stringr");
+library("plyr");
 
 #read data and initialize variables
 outcomeData <- read.csv("outcome-of-care-measures.csv", colClasses = "character", na.strings = "Not Available");

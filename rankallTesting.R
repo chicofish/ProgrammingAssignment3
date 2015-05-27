@@ -9,18 +9,32 @@ check <- rankall("MA", "heart failure", -9)
 check <- rankall("sd", "pneumonia", 4.5)
 check <- rankall("ky", "pneumonia", 6587)
 
-
+rm(checking)
+rm(check)
 
 as.integer(4.5)
 
+rankall("heart aack", "best")
+rankall("heart attack", 100)
 
-check <- rankall("sd", "pneumonia", 4)
+rankall("heart attack", "best")
+head(rankall("heart attack", 20), 10)
+tail(rankall("pneumonia", "worst"),3)
+tail(rankall("heart failure"),10)
+
+rankFilter <- rank(outcomeData[,11])
+checking <- outcomeData[rankFilter, ]
+
+check <- rankall("pneumonia", 4)
+check <- rankall("heart attack", 4)
+check <- rankall("heart failure", 4)
+
 check <- rankall("tx", "heart failure", 4)
 
-check <- rankall("LA", "heart attack", "best")
-check <- rankall("LA", "heart attack", "worst")
+check <- rankall("heart attack", "best")
+check <- rankall("heart attack", "worst")
 
-check <- rankall("MD", "heart attack", "worst")
+check <- rankall("heart attack", "worst")
 
 
 check <- rankall("LA", "Heart Attack");
